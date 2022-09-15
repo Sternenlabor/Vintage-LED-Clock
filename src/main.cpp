@@ -2,11 +2,8 @@
 #include <WiFi.h>
 #include "time.h"
 
-// char *ssid = "Sternenlabor";         // Set you WiFi SSID
-// char *password = "!Sternenlabor99!"; // Set you WiFi password
-
-char *ssid = "blacky_nomap";         // Set you WiFi SSID
-char *password = "SaltAndPepper101"; // Set you WiFi password
+char *ssid = "xxx";         // Set you WiFi SSID
+char *password = "xxx"; // Set you WiFi password
 
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
