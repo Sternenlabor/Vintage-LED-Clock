@@ -17,7 +17,7 @@ void setup()
 {
    Serial.begin(115200);
    Serial.setDebugOutput(true);
-   g_LedClock.begin();
+   
 
    // Connect to Wi-Fi
    Serial.print("Connecting to ");
@@ -52,6 +52,7 @@ void setup()
    setenv("TZ", timezone.c_str(), 1); //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
    tzset();
 
+   g_LedClock.begin();
    g_LedClock.digitalClockDisplay();
 
    // disconnect WiFi as it's no longer needed
