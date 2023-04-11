@@ -1,9 +1,10 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include "time.h"
+#include "credentials.h"
 
-char *ssid = "xxx";         // Set you WiFi SSID
-char *password = "xxx"; // Set you WiFi password
+extern const char cstrSSID[];
+extern const char cstrPWD[];
 
 const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
@@ -327,8 +328,8 @@ void setup()
 
   // Connect to Wi-Fi
   Serial.print("Connecting to ");
-  Serial.println(ssid);
-  WiFi.begin(ssid, password);
+  Serial.println(cstrSSID);
+  WiFi.begin(cstrSSID, cstrPWD);
   while (WiFi.status() != WL_CONNECTED)
   {
     delay(500);
