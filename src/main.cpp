@@ -11,7 +11,7 @@ const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
 
-LedClockControl g_LedClock;
+LedClockControl g_LedClock(true, 50);
 
 void setup()
 {

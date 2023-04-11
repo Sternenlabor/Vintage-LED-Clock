@@ -5,6 +5,11 @@
 #define NUM_OUTPUTS_PER_DIGIT 5
 #define SEGMENT_OFF 10
 
+#define PWM_LED_CHANNEL_LOW 0  //!< PWM Channel which always stays low
+#define PWM_LED_CHANNEL_HIGH 1 //!< PWM Channel which is used for dimming
+#define PWM_LED_FREQUENCY 1000 //!< frequency in Hz
+#define PWM_LED_RESOLUTION 8   //!< PWM resolution in bits
+
 stcPin g_stcPinConfHourHigh[11][NUM_OUTPUTS_PER_DIGIT] = {
     {{13, LOW},
      {0, LOW},
@@ -233,7 +238,8 @@ stcPin g_stcPinConfMinLow[11][NUM_OUTPUTS_PER_DIGIT] = {
      {12, LOW},
      {14, LOW}}};
 
-LedClockControl::LedClockControl()
+LedClockControl::LedClockControl(bool bEnableDimming, uint8_t uiBrigthnessPercent) : m_bEnableDimming(bEnableDimming),
+                                                                                     m_uiBrigthnessPercent(uiBrigthnessPercent)
 {
    // nothing to do
 }
@@ -245,15 +251,27 @@ LedClockControl::~LedClockControl()
 
 void LedClockControl::begin()
 {
-   for (uint8_t i = 0; i < NUM_OUTPUTS_PER_DIGIT; i++)
+   if (!m_bEnableDimming)
    {
-      pinMode(g_stcPinConfHourHigh[0][i].pin_number, OUTPUT);
-      pinMode(g_stcPinConfHourLow[0][i].pin_number, OUTPUT);
-      pinMode(g_stcPinConfMinHigh[0][i].pin_number, OUTPUT);
-      pinMode(g_stcPinConfMinLow[0][i].pin_number, OUTPUT);
+      // no dimming init GPIOs as normal outputs
+      for (uint8_t i = 0; i < NUM_OUTPUTS_PER_DIGIT; i++)
+      {
+         pinMode(g_stcPinConfHourHigh[0][i].pin_number, OUTPUT);
+         pinMode(g_stcPinConfHourLow[0][i].pin_number, OUTPUT);
+         pinMode(g_stcPinConfMinHigh[0][i].pin_number, OUTPUT);
+         pinMode(g_stcPinConfMinLow[0][i].pin_number, OUTPUT);
+      }
+   }
+   else
+   {
+      ledcSetup(PWM_LED_CHANNEL_LOW, PWM_LED_FREQUENCY, PWM_LED_RESOLUTION);
+      ledcWrite(PWM_LED_CHANNEL_LOW, 0);
+
+      ledcSetup(PWM_LED_CHANNEL_HIGH, PWM_LED_FREQUENCY, PWM_LED_RESOLUTION);
+      setBrightness(m_uiBrigthnessPercent);
    }
 
-   updateDigits(SEGMENT_OFF,SEGMENT_OFF,SEGMENT_OFF,SEGMENT_OFF);
+   updateDigits(SEGMENT_OFF, SEGMENT_OFF, SEGMENT_OFF, SEGMENT_OFF);
 }
 
 void LedClockControl::digitalClockDisplay()
@@ -288,11 +306,46 @@ void LedClockControl::digitalClockDisplay()
 void LedClockControl::updateDigits(uint8_t uiHourHigh, uint8_t uiHourLow, uint8_t uiMinHigh, uint8_t uiMinLow)
 {
 
-   for (uint8_t i = 0; i < NUM_OUTPUTS_PER_DIGIT; i++)
+   if (!m_bEnableDimming)
    {
-      digitalWrite(g_stcPinConfHourHigh[uiHourHigh][i].pin_number, g_stcPinConfHourHigh[uiHourHigh][i].pin_state);
-      digitalWrite(g_stcPinConfHourLow[uiHourLow][i].pin_number, g_stcPinConfHourLow[uiHourLow][i].pin_state);
-      digitalWrite(g_stcPinConfMinHigh[uiMinHigh][i].pin_number, g_stcPinConfMinHigh[uiMinHigh][i].pin_state);
-      digitalWrite(g_stcPinConfMinLow[uiMinLow][i].pin_number, g_stcPinConfMinLow[uiMinLow][i].pin_state);
+      // no dimming just set IOs
+      for (uint8_t i = 0; i < NUM_OUTPUTS_PER_DIGIT; i++)
+      {
+         digitalWrite(g_stcPinConfHourHigh[uiHourHigh][i].pin_number, g_stcPinConfHourHigh[uiHourHigh][i].pin_state);
+         digitalWrite(g_stcPinConfHourLow[uiHourLow][i].pin_number, g_stcPinConfHourLow[uiHourLow][i].pin_state);
+         digitalWrite(g_stcPinConfMinHigh[uiMinHigh][i].pin_number, g_stcPinConfMinHigh[uiMinHigh][i].pin_state);
+         digitalWrite(g_stcPinConfMinLow[uiMinLow][i].pin_number, g_stcPinConfMinLow[uiMinLow][i].pin_state);
+      }
+   }
+   else
+   {
+      for (uint8_t i = 0; i < NUM_OUTPUTS_PER_DIGIT; i++)
+      {
+         selectPwmForIO(g_stcPinConfHourHigh[uiHourHigh][i].pin_number, g_stcPinConfHourHigh[uiHourHigh][i].pin_state);
+         selectPwmForIO(g_stcPinConfHourLow[uiHourLow][i].pin_number, g_stcPinConfHourLow[uiHourLow][i].pin_state);
+         selectPwmForIO(g_stcPinConfMinHigh[uiMinHigh][i].pin_number, g_stcPinConfMinHigh[uiMinHigh][i].pin_state);
+         selectPwmForIO(g_stcPinConfMinLow[uiMinLow][i].pin_number, g_stcPinConfMinLow[uiMinLow][i].pin_state);
+      }
+   }
+}
+
+void LedClockControl::selectPwmForIO(uint8_t uiPin, uint8_t uiState)
+{
+   if (uiState == LOW)
+   {
+      ledcAttachPin(uiPin, PWM_LED_CHANNEL_LOW);
+   }
+   else
+   {
+      ledcAttachPin(uiPin, PWM_LED_CHANNEL_HIGH);
+   }
+}
+
+void LedClockControl::setBrightness(uint8_t uiBrigthnessPercent)
+{
+   if (m_bEnableDimming)
+   {
+      m_uiBrigthnessPercent = uiBrigthnessPercent;
+      ledcWrite(PWM_LED_CHANNEL_HIGH, ((255 / 100.0) * m_uiBrigthnessPercent));
    }
 }
