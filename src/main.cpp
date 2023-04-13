@@ -11,13 +11,16 @@ const char *ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 0;
 const int daylightOffset_sec = 3600;
 
-LedClockControl g_LedClock(true, 50);
+LedClockControl g_LedClock(true, 30);
 
 void setup()
 {
+
+   g_LedClock.begin();
+   g_LedClock.updateDigits(SEGMENT_OFF,SEGMENT_OFF,SEGMENT_OFF,SEGMENT_OFF);
+
    Serial.begin(115200);
    Serial.setDebugOutput(true);
-   
 
    // Connect to Wi-Fi
    Serial.print("Connecting to ");
@@ -52,12 +55,11 @@ void setup()
    setenv("TZ", timezone.c_str(), 1); //  Now adjust the TZ.  Clock settings are adjusted to show the new local time
    tzset();
 
-   g_LedClock.begin();
    g_LedClock.digitalClockDisplay();
-
    // disconnect WiFi as it's no longer needed
    WiFi.disconnect(true);
    WiFi.mode(WIFI_OFF);
+
 }
 
 void loop()
