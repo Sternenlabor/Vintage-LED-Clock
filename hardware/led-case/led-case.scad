@@ -6,6 +6,10 @@ ring_height = 3.9; //mm
 overall_height = 12.9; //mm
 wall_thickness = 0.9; //mm
 
+cutout_height = 2.2; //mm
+cutout_top_width = 5; //mm
+cutout_bottom_width = 12; //mm
+
 color("red") {
     difference() {
         
@@ -35,7 +39,7 @@ color("red") {
         }
         
         // cutout
-        translate([-6, 10, -0.01]) rotate([90, 00, 0]) color("blue") linear_extrude(20) polygon(points=[[0, 0], [12, 0],[12 - 2.5, 2.8], [2.5, 2.8]]);
+        translate([-cutout_bottom_width / 2, width, -0.01]) rotate([90, 00, 0]) color("blue") linear_extrude(2 * width) polygon(points=[[0, 0], [cutout_bottom_width, 0],[cutout_bottom_width - cutout_top_width / 2, cutout_height], [cutout_top_width / 2, cutout_height]]);
         
         // Test
         //translate([0, 25, 0]) cube([50, 50, 50], center=true); // mask   
