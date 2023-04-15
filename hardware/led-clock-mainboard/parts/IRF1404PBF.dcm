@@ -1,0 +1,7 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP IRF1404PBF
+D IRF1404PBF
+F https://www.infineon.com/dgdl/irf1404pbf.pdf?fileId=5546d462533600a4015355dae92618b0
+$ENDCMP
+# end doc library
