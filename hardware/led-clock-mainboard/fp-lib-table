@@ -1,0 +1,7 @@
+(fp_lib_table
+  (lib (name "LM2576T-5.0")(type "KiCad")(uri "${KIPRJMOD}/parts/LM2576T-5.0.pretty")(options "")(descr ""))
+  (lib (name "CD40109BE")(type "KiCad")(uri "${KIPRJMOD}/parts/CD40109BE.pretty")(options "")(descr ""))
+  (lib (name "MODULE_ESP32_NODEMCU")(type "KiCad")(uri "${KIPRJMOD}/parts/MODULE_ESP32_NODEMCU.pretty")(options "")(descr ""))
+  (lib (name "Sternenlabor Logo")(type "KiCad")(uri "${KIPRJMOD}/parts/Sternenlabor Logo.pretty")(options "")(descr ""))
+  (lib (name "IRF1404PBF")(type "KiCad")(uri "${KIPRJMOD}/parts/IRF1404PBF.pretty")(options "")(descr ""))
+)
