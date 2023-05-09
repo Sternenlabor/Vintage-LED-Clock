@@ -9,6 +9,7 @@ e.g.:
 
     const char cstrSSID[] = "MyNetwork";
     const char cstrPWD[] = "secret";
+    const char cstrHostname[] = "Vintage-LED-Clock";
 
     #endif /* _CREDENTIALS_H_ */
 

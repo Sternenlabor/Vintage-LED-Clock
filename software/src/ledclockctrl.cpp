@@ -318,7 +318,7 @@ void LedClockControl::digitalClockDisplay()
    int m1 = temp / 10; // Split minutes into two digits, tens and units
    int m2 = temp % 10;
 
-   Serial.println(String(h1) + "-" + String(h2) + ":" + String(m1) + "-" + String(m2));
+   //Serial.println(String(h1) + "-" + String(h2) + ":" + String(m1) + "-" + String(m2));
    updateDigits(h1, h2, m1, m2);
 }
 
